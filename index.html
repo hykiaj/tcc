@@ -1,1 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco Kids</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
 
+    <header>
+        <a class="logo" href="index.html">Eco kids</a>
+        <div class="nav-buttons">
+            <button class="btn-header" id="btnEntrar">Entrar</button>
+            <a class="btn-header" href="cadastro.html">Cadastrar</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="landing-content">
+            <!-- Logo -->
+            <div class="landing-logo">
+                <svg viewBox="0 0 500 300" width="100%" height="100%">
+                    <!-- SUN (Top Left of Text) -->
+                    <g transform="translate(190, 75)">
+                        <!-- Rays -->
+                        <line x1="0" y1="0" x2="0" y2="-32" stroke="#F5D03B" stroke-width="4" stroke-linecap="round" />
+                        <line x1="0" y1="0" x2="0" y2="32" stroke="#F5D03B" stroke-width="4" stroke-linecap="round" />
+                        <line x1="0" y1="0" x2="-32" y2="0" stroke="#F5D03B" stroke-width="4" stroke-linecap="round" />
+                        <line x1="0" y1="0" x2="32" y2="0" stroke="#F5D03B" stroke-width="4" stroke-linecap="round" />
+                        <line x1="0" y1="0" x2="-22" y2="-22" stroke="#F5D03B" stroke-width="4" stroke-linecap="round" />
+                        <line x1="0" y1="0" x2="22" y2="22" stroke="#F5D03B" stroke-width="4" stroke-linecap="round" />
+                        <line x1="0" y1="0" x2="22" y2="-22" stroke="#F5D03B" stroke-width="4" stroke-linecap="round" />
+                        <line x1="0" y1="0" x2="-22" y2="22" stroke="#F5D03B" stroke-width="4" stroke-linecap="round" />
+                        <!-- Core -->
+                        <circle cx="0" cy="0" r="20" fill="#F5D03B" stroke="#EAA812" stroke-width="1.5" />
+                        <!-- Smile Face -->
+                        <circle cx="-6" cy="-4" r="2.5" fill="#333333" />
+                        <circle cx="6" cy="-4" r="2.5" fill="#333333" />
+                        <path d="M -8,5 Q 0,14 8,5" stroke="#333333" stroke-width="2.5" stroke-linecap="round" fill="none" />
+                        <!-- Pink blush -->
+                        <circle cx="-12" cy="2" r="2" fill="#EC969C" />
+                        <circle cx="12" cy="2" r="2" fill="#EC969C" />
+                    </g>
+
+                    <!-- RAINBOW (Top Right of Text) -->
+                    <g transform="translate(285, 90)">
+                        <!-- Outer Red -->
+                        <path d="M -45,10 A 45,45 0 0,1 45,10" fill="none" stroke="#E1251B" stroke-width="7" />
+                        <!-- Orange -->
+                        <path d="M -38,10 A 38,38 0 0,1 38,10" fill="none" stroke="#F39C38" stroke-width="7" />
+                        <!-- Yellow -->
+                        <path d="M -31,10 A 31,31 0 0,1 31,10" fill="none" stroke="#F5D03B" stroke-width="7" />
+                        <!-- Green -->
+                        <path d="M -24,10 A 24,24 0 0,1 24,10" fill="none" stroke="#3ED160" stroke-width="7" />
+                        <!-- Blue -->
+                        <path d="M -17,10 A 17,17 0 0,1 17,10" fill="none" stroke="#0084E3" stroke-width="7" />
+
+                        <!-- Clouds Left -->
+                        <g transform="translate(-48, 10)" fill="#AED8F2">
+                            <circle cx="-10" cy="0" r="10" />
+                            <circle cx="0" cy="-6" r="12" />
+                            <circle cx="10" cy="0" r="10" />
+                            <circle cx="0" cy="4" r="8" />
+                        </g>
+                        <!-- Clouds Right -->
+                        <g transform="translate(48, 10)" fill="#AED8F2">
+                            <circle cx="-10" cy="0" r="10" />
+                            <circle cx="0" cy="-6" r="12" />
+                            <circle cx="10" cy="0" r="10" />
+                            <circle cx="0" cy="4" r="8" />
+                        </g>
+                    </g>
+
+                    <!-- LOGO TEXT: ECO * KIDS -->
+                    <g transform="translate(250, 160)" text-anchor="middle" font-family="'Montserrat', 'Arial Black', sans-serif" font-weight="900" letter-spacing="-2">
+                        <!-- ECO -->
+                        <text x="-65" y="0" font-size="64" fill="#0084E3">E</text>
+                        <text x="-10" y="0" font-size="64" fill="#3ED160">C</text>
+                        <text x="45" y="0" font-size="64" fill="#E1251B">O</text>
+                        
+                        <!-- Asterisk * -->
+                        <text x="95" y="-12" font-size="55" fill="#F39C38">*</text>
+
+                        <!-- KIDS -->
+                        <text x="15" y="52" font-size="68" fill="#F5D03B" stroke="#EAA812" stroke-width="1" letter-spacing="1">KIDS</text>
+                    </g>
+
+                    <!-- GREEN HANDPRINT (Bottom Left of Logo) -->
+                    <g transform="translate(145, 175)" fill="#3ED160" stroke="#3ED160" stroke-linejoin="round">
+                        <!-- Palm -->
+                        <path d="M 18,28 Q 12,24 10,32 Q 8,42 16,50 Q 24,56 34,48 Q 36,38 28,34 Q 22,34 18,28 Z" />
+                        <!-- Thumb -->
+                        <path d="M 32,44 Q 46,45 42,36 Q 38,30 30,38" stroke-width="3" />
+                        <!-- Index finger -->
+                        <path d="M 23,32 Q 28,10 22,8 Q 16,10 19,28" stroke-width="3.5" />
+                        <!-- Middle finger -->
+                        <path d="M 16,28 Q 18,6 11,5 Q 5,8 11,26" stroke-width="3.5" />
+                        <!-- Ring finger -->
+                        <path d="M 11,28 Q 8,8 2,10 Q 0,15 7,28" stroke-width="3.5" />
+                        <!-- Little finger -->
+                        <path d="M 7,33 Q -1,18 -5,22 Q -5,28 4,36" stroke-width="3.5" />
+                    </g>
+                </svg>
+            </div>
+            
+            <h1 class="landing-tagline">Ecoando sentimentos e palavras</h1>
+        </div>
+
+        <!-- Overlay Login / Password Recovery Card -->
+        <div class="overlay-card hidden" id="loginOverlay">
+            
+            <!-- Login State -->
+            <div id="loginState">
+                <h2 class="card-title" style="font-size: 24px; margin-bottom: 25px;">Bem-vindo de volta!</h2>
+                <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+                    <div class="form-group">
+                        <input type="email" id="loginEmail" class="form-input" placeholder="E-mail" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="loginSenha" class="form-input" placeholder="Senha" required>
+                    </div>
+                    <button type="submit" class="btn-primary btn-blue">Entrar</button>
+                </form>
+                <div class="form-links">
+                    <span class="form-link" onclick="toggleOverlayState('recover')">Esqueci minha senha</span>
+                    <a class="form-link form-link-green" href="cadastro.html">Criar uma conta</a>
+                </div>
+            </div>
+
+            <!-- Password Recovery State -->
+            <div id="recoverState" class="hidden" style="display: none;">
+                <h2 class="card-title" style="font-size: 24px; margin-bottom: 25px;">Recuperar Conta</h2>
+                <form id="recoverForm" onsubmit="handleRecoverSubmit(event)">
+                    <div class="form-group">
+                        <input type="email" id="recoverEmail" class="form-input" placeholder="E-mail" required>
+                    </div>
+                    <button type="submit" class="btn-primary btn-blue" id="btnEnviarCodigo">Enviar Código</button>
+                    
+                    <div class="form-group" style="margin-top: 20px;">
+                        <input type="text" id="recoverCode" class="form-input" placeholder="Código">
+                    </div>
+                    <button type="button" class="btn-primary btn-green" id="btnConfirmarCodigo" onclick="handleVerifyCode()" style="margin-top: 10px;">Entrar</button>
+                </form>
+                <div class="form-links">
+                    <span class="form-link" onclick="toggleOverlayState('login')">Voltar para o Login</span>
+                    <a class="form-link form-link-green" href="cadastro.html">Criar conta</a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Background script & Auth logic -->
+    <script src="js/auth.js"></script>
+    <script>
+        const btnEntrar = document.getElementById('btnEntrar');
+        const loginOverlay = document.getElementById('loginOverlay');
+        const loginState = document.getElementById('loginState');
+        const recoverState = document.getElementById('recoverState');
+
+        // Altera o display do dropdown
+        btnEntrar.addEventListener('click', (e) => {
+            e.stopPropagation();
+            loginOverlay.classList.toggle('hidden');
+        });
+
+        // Fecha o dropdown quando clicar fora
+        document.addEventListener('click', (e) => {
+            if (!loginOverlay.contains(e.target) && e.target !== btnEntrar) {
+                loginOverlay.classList.add('hidden');
+            }
+        });
+
+        // Altera o estado no card
+        function toggleOverlayState(state) {
+            if (state === 'recover') {
+                loginState.style.display = 'none';
+                recoverState.style.display = 'block';
+            } else {
+                loginState.style.display = 'block';
+                recoverState.style.display = 'none';
+            }
+        }
+
+        // Login Handler
+        function handleLoginSubmit(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            
+            // Set dummy names based on email or default to "Visitante" if no previous account is saved
+            const savedEmail = localStorage.getItem(STATE_KEYS.EMAIL);
+            if (savedEmail !== email) {
+                // Set default mock session info
+                localStorage.setItem(STATE_KEYS.CHILD_NAME, "Gabriel");
+                localStorage.setItem(STATE_KEYS.PARENT_NAME, "Flávio");
+                localStorage.setItem(STATE_KEYS.EMAIL, email);
+                localStorage.setItem(STATE_KEYS.AVATAR_ID, "4"); // Boy avatar
+            }
+
+            localStorage.setItem(STATE_KEYS.IS_LOGGED_IN, "true");
+            window.location.href = 'dashboard.html';
+        }
+
+        // Handle Send Code simulation
+        function handleRecoverSubmit(event) {
+            event.preventDefault();
+            alert("Código de recuperação enviado para o seu e-mail! (Código simulado: 1234)");
+            document.getElementById('recoverCode').focus();
+        }
+
+        // Handle Verification Code simulation
+        function handleVerifyCode() {
+            const code = document.getElementById('recoverCode').value;
+            if (code === '1234') {
+                localStorage.setItem(STATE_KEYS.CHILD_NAME, "Gabriel");
+                localStorage.setItem(STATE_KEYS.AVATAR_ID, "4");
+                localStorage.setItem(STATE_KEYS.IS_LOGGED_IN, "true");
+                window.location.href = 'dashboard.html';
+            } else {
+                alert("Por favor, insira o código correto (1234) para simular o acesso.");
+            }
+        }
+    </script>
+</body>
+</html>

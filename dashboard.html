@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco Kids - Painel</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="dashboard-header">
+        <div class="dashboard-user">
+            <div class="dashboard-avatar" id="headerAvatar">
+                <!-- O avatar fica injetado aqui por JS -->
+            </div>
+            <div class="dashboard-greeting" id="greetingText">Olá, Nome da criança</div>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn-header" onclick="handleLogout()" style="color: var(--color-red); font-weight: bold;">Sair</button>
+        </div>
+    </header>
+
+    <main style="justify-content: center; min-height: calc(100vh - 75px);">
+        <div class="dashboard-grid">
+            
+            <!-- ALIMENTAÇÃO -->
+            <a class="category-card cat-alimentacao" href="prancha.html?cat=alimentacao">
+                <div class="icon-circle">
+                    <svg viewBox="0 0 100 100" fill="none" stroke="#F39C38" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Plate -->
+                        <circle cx="50" cy="50" r="32" />
+                        <circle cx="50" cy="50" r="24" stroke-dasharray="2,2" />
+                        <!-- Fork (Left) -->
+                        <path d="M 23,34 L 23,54 M 19,34 L 19,46 M 27,34 L 27,46 M 23,54 L 23,68" />
+                        <!-- Spoon (Right) -->
+                        <path d="M 77,34 Q 71,34 71,46 Q 71,56 77,56 L 77,68 M 77,34 Q 83,34 83,46 Q 83,56 77,56" />
+                    </svg>
+                </div>
+                <div class="category-title">Alimentação</div>
+            </a>
+
+            <!-- BEBIDAS -->
+            <a class="category-card cat-bebidas" href="prancha.html?cat=bebidas">
+                <div class="icon-circle">
+                    <svg viewBox="0 0 100 100" fill="none" stroke="#0084E3" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Water glass -->
+                        <path d="M 30,22 L 38,76 Q 39,82 50,82 Q 61,82 62,76 L 70,22 Z" />
+                        <!-- Water waves inside -->
+                        <path d="M 34,48 Q 42,44 50,48 Q 58,52 66,48" stroke="#3B82F6" stroke-width="4" />
+                        <!-- Drops -->
+                        <path d="M 46,12 Q 50,4 54,12" stroke="#3B82F6" stroke-width="3" />
+                        <path d="M 36,16 Q 40,8 44,16" stroke="#3B82F6" stroke-width="3" />
+                    </svg>
+                </div>
+                <div class="category-title">Bebidas</div>
+            </a>
+
+            <!-- DIVERSÃO -->
+            <a class="category-card cat-diversao" href="prancha.html?cat=diversao">
+                <div class="icon-circle">
+                    <svg viewBox="0 0 100 100" fill="none" stroke="#EAA812" stroke-width="4.5" stroke-linejoin="round">
+                        <!-- Gold Star -->
+                        <path d="M 50,12 L 62,38 L 91,38 L 68,55 L 77,82 L 50,65 L 23,82 L 32,55 L 9,38 L 38,38 Z" fill="#F5D03B" stroke="#EAA812" />
+                    </svg>
+                </div>
+                <div class="category-title" style="color: #4B4B4B;">Diversão</div>
+            </a>
+
+            <!-- EMOÇÕES -->
+            <a class="category-card cat-emocoes" href="prancha.html?cat=emocoes">
+                <div class="icon-circle">
+                    <svg viewBox="0 0 100 100" fill="none" stroke="#E1251B" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+                        <!-- Heart shape -->
+                        <path d="M 50,32 C 40,15 15,20 15,44 C 15,68 50,88 50,88 C 50,88 85,68 85,44 C 85,20 60,15 50,32 Z" fill="#EC969C" stroke="#E1251B" />
+                    </svg>
+                </div>
+                <div class="category-title">Emoções</div>
+            </a>
+
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+    <script>
+        // Verifica se está logado pois só abre essa página com autenticação
+        checkAuth();
+
+        // Carrega informações do usuário
+        const childName = localStorage.getItem(STATE_KEYS.CHILD_NAME) || "Criança";
+        const avatarIdStr = localStorage.getItem(STATE_KEYS.AVATAR_ID);
+        
+        // Atualiza a frase de bem vindo
+        document.getElementById('greetingText').textContent = `Olá, ${childName}`;
+
+        // Injeta o avatar
+        const avatarContainer = document.getElementById('headerAvatar');
+        const selectedId = parseInt(avatarIdStr || "1");
+        const avatarObj = AVATARS.find(av => av.id === selectedId) || AVATARS[0];
+        avatarContainer.innerHTML = `<img src="${avatarObj.path}" alt="${avatarObj.name}">`;
+
+        // Logout
+        function handleLogout() {
+            localStorage.removeItem(STATE_KEYS.IS_LOGGED_IN);
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

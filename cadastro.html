@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco Kids - Criar Conta</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <a class="logo" href="index.html">Eco kids</a>
+        <div class="nav-buttons">
+            <a class="btn-header" href="index.html">Início</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="card-container">
+            <h1 class="card-title">Criando Conta</h1>
+            
+            <form id="cadastroForm" onsubmit="handleCadastroSubmit(event)">
+                <div class="form-group">
+                    <input type="text" id="nomeCrianca" class="form-input" placeholder="Nome da criança" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="nomeResponsavel" class="form-input" placeholder="Nome do responsável" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" class="form-input" placeholder="E-mail" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="senha" class="form-input" placeholder="Senha" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="confirmarSenha" class="form-input" placeholder="Confirmar senha" required>
+                </div>
+                
+                <button type="submit" class="btn-primary btn-green" style="margin-top: 15px;">Criar Conta</button>
+            </form>
+
+            <div class="form-links" style="margin-top: 20px;">
+                <a href="index.html" class="form-link">Já tem uma conta? Entrar</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+    <script>
+        function handleCadastroSubmit(event) {
+            event.preventDefault();
+            
+            const nomeCrianca = document.getElementById('nomeCrianca').value;
+            const nomeResponsavel = document.getElementById('nomeResponsavel').value;
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const confirmarSenha = document.getElementById('confirmarSenha').value;
+
+            if (senha !== confirmarSenha) {
+                alert("As senhas não coincidem. Por favor, tente novamente.");
+                return;
+            }
+
+            // Salva no storage
+            localStorage.setItem(STATE_KEYS.CHILD_NAME, nomeCrianca);
+            localStorage.setItem(STATE_KEYS.PARENT_NAME, nomeResponsavel);
+            localStorage.setItem(STATE_KEYS.EMAIL, email);
+            localStorage.setItem(STATE_KEYS.IS_LOGGED_IN, "true");
+
+            // Redireciona para selecionar avatar
+            window.location.href = 'avatar.html';
+        }
+    </script>
+</body>
+</html>

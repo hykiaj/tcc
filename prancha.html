@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco Kids - Prancha de Comunicação</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="dashboard-header">
+        <div class="dashboard-user">
+            <div class="dashboard-avatar" id="headerAvatar">
+                <!-- Avatar injetado aqui -->
+            </div>
+            <div class="dashboard-greeting" id="greetingText">Olá, Nome da criança</div>
+        </div>
+        <div class="nav-buttons">
+            <a class="btn-header" href="dashboard.html">Voltar ao Painel</a>
+        </div>
+    </header>
+
+    <main style="justify-content: flex-start; padding-top: 40px;">
+        <div class="board-container" id="boardContainer">
+            
+            <!-- Board Header (Row with Back Button and Title) -->
+            <div class="board-header-row">
+                <a href="dashboard.html" class="board-back-btn">
+                    <!-- Left Arrow SVG -->
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12" />
+                        <polyline points="12 19 5 12 12 5" />
+                    </svg>
+                    Voltar
+                </a>
+                <h1 class="board-title" id="boardTitle">Categoria</h1>
+                <div style="width: 80px;"></div> <!-- Spacer for optical alignment -->
+            </div>
+
+            <!-- Board Grid (populated dynamically by speech.js) -->
+            <div class="board-grid" id="boardGrid">
+                <!-- Dynamic cards go here -->
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/speech.js"></script>
+    <script>
+        // Restrict page access to logged-in sessions
+        checkAuth();
+
+        // Load kid profile info from localStorage
+        const childName = localStorage.getItem(STATE_KEYS.CHILD_NAME) || "Criança";
+        const avatarIdStr = localStorage.getItem(STATE_KEYS.AVATAR_ID);
+        
+        // Update greeting
+        document.getElementById('greetingText').textContent = `Olá, ${childName}`;
+
+        // Inject avatar PNG
+        const avatarContainer = document.getElementById('headerAvatar');
+        const selectedId = parseInt(avatarIdStr || "1");
+        const avatarObj = AVATARS.find(av => av.id === selectedId) || AVATARS[0];
+        avatarContainer.innerHTML = `<img src="${avatarObj.path}" alt="${avatarObj.name}">`;
+
+        // Initialize the communication board items based on category URL parameter
+        document.addEventListener('DOMContentLoaded', () => {
+            initBoard();
+        });
+    </script>
+</body>
+</html>
