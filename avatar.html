@@ -8,6 +8,7 @@
 </head>
 <body>
 
+    <!-- Header -->
     <header>
         <a class="logo" href="index.html">Eco kids</a>
         <div class="nav-buttons">
@@ -15,13 +16,14 @@
         </div>
     </header>
 
+    <!-- Main Container -->
     <main>
         <div class="card-container" style="max-width: 650px;">
             <h1 class="card-title">Escolha um Avatar</h1>
             
-            <!-- Avatares dinâmicos -->
+            <!-- Grid rendered dynamically -->
             <div class="avatar-grid" id="avatarGrid">
-                <!-- JS vai injetar aqui os avatares -->
+                <!-- Avatars from JS will be injected here -->
             </div>
 
             <button class="btn-primary btn-green" id="btnPronto" disabled style="opacity: 0.6; cursor: not-allowed;">Pronto</button>
@@ -29,16 +31,17 @@
     </main>
 
     <!-- Scripts -->
-    <script src="js/auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/auth.js?v=1.0.1"></script>
     <script>
-        // Verifica login
+        // Check if user is registered, otherwise redirect
         checkAuth();
 
         const grid = document.getElementById('avatarGrid');
         const btnPronto = document.getElementById('btnPronto');
         let selectedId = null;
 
-        // Renderiza os avatares
+        // Render all the beautiful PNG avatars from auth.js
         AVATARS.forEach(avatar => {
             const container = document.createElement('div');
             container.className = 'avatar-item';
@@ -47,16 +50,16 @@
             container.innerHTML = `<img src="${avatar.path}" alt="${avatar.name}">`;
 
             container.addEventListener('click', () => {
-                // Limpa seleção
+                // Clear previous selections
                 document.querySelectorAll('.avatar-item').forEach(item => {
                     item.classList.remove('selected');
                 });
 
-                // Mostra a seleção atual
+                // Highlight active selection
                 container.classList.add('selected');
                 selectedId = avatar.id;
 
-                // Habilita o botão
+                // Enable Pronto button
                 btnPronto.disabled = false;
                 btnPronto.style.opacity = '1';
                 btnPronto.style.cursor = 'pointer';
@@ -65,11 +68,23 @@
             grid.appendChild(container);
         });
 
-        // Salva o avatar e troca a página
-        btnPronto.addEventListener('click', () => {
+        // Save selected avatar and move to Dashboard
+        btnPronto.addEventListener('click', async () => {
             if (selectedId !== null) {
-                localStorage.setItem(STATE_KEYS.AVATAR_ID, selectedId.toString());
-                window.location.href = 'dashboard.html';
+                const originalText = btnPronto.textContent;
+                btnPronto.disabled = true;
+                btnPronto.textContent = "Salvando...";
+
+                try {
+                    await updateAvatar(selectedId);
+                    localStorage.setItem(STATE_KEYS.AVATAR_ID, selectedId.toString());
+                    window.location.href = 'dashboard.html';
+                } catch (err) {
+                    alert("Erro ao salvar avatar: " + err.message);
+                } finally {
+                    btnPronto.disabled = false;
+                    btnPronto.textContent = originalText;
+                }
             }
         });
     </script>

@@ -8,10 +8,11 @@
 </head>
 <body>
 
+    <!-- Dashboard Header -->
     <header class="dashboard-header">
         <div class="dashboard-user">
             <div class="dashboard-avatar" id="headerAvatar">
-                <!-- O avatar fica injetado aqui por JS -->
+                <!-- Selected Avatar SVG will be injected here -->
             </div>
             <div class="dashboard-greeting" id="greetingText">Olá, Nome da criança</div>
         </div>
@@ -20,6 +21,7 @@
         </div>
     </header>
 
+    <!-- Main Container -->
     <main style="justify-content: center; min-height: calc(100vh - 75px);">
         <div class="dashboard-grid">
             
@@ -81,27 +83,35 @@
     </main>
 
     <!-- Scripts -->
-    <script src="js/auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/auth.js?v=1.0.1"></script>
     <script>
-        // Verifica se está logado pois só abre essa página com autenticação
+        // Restrict page access to logged-in sessions
         checkAuth();
+        
+        // Check session in the background
+        checkSession();
 
-        // Carrega informações do usuário
+        // Load kid profile info from localStorage
         const childName = localStorage.getItem(STATE_KEYS.CHILD_NAME) || "Criança";
         const avatarIdStr = localStorage.getItem(STATE_KEYS.AVATAR_ID);
         
-        // Atualiza a frase de bem vindo
+        // Update greeting
         document.getElementById('greetingText').textContent = `Olá, ${childName}`;
 
-        // Injeta o avatar
+        // Inject avatar PNG
         const avatarContainer = document.getElementById('headerAvatar');
         const selectedId = parseInt(avatarIdStr || "1");
         const avatarObj = AVATARS.find(av => av.id === selectedId) || AVATARS[0];
         avatarContainer.innerHTML = `<img src="${avatarObj.path}" alt="${avatarObj.name}">`;
 
-        // Logout
-        function handleLogout() {
-            localStorage.removeItem(STATE_KEYS.IS_LOGGED_IN);
+        // Logout function
+        async function handleLogout() {
+            try {
+                await signOut();
+            } catch (err) {
+                console.error("Erro ao deslogar:", err);
+            }
             window.location.href = 'index.html';
         }
     </script>

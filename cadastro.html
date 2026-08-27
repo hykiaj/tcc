@@ -8,6 +8,7 @@
 </head>
 <body>
 
+    <!-- Header -->
     <header>
         <a class="logo" href="index.html">Eco kids</a>
         <div class="nav-buttons">
@@ -15,6 +16,7 @@
         </div>
     </header>
 
+    <!-- Main Container -->
     <main>
         <div class="card-container">
             <h1 class="card-title">Criando Conta</h1>
@@ -46,9 +48,10 @@
     </main>
 
     <!-- Scripts -->
-    <script src="js/auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/auth.js?v=1.0.1"></script>
     <script>
-        function handleCadastroSubmit(event) {
+        async function handleCadastroSubmit(event) {
             event.preventDefault();
             
             const nomeCrianca = document.getElementById('nomeCrianca').value;
@@ -62,14 +65,35 @@
                 return;
             }
 
-            // Salva no storage
-            localStorage.setItem(STATE_KEYS.CHILD_NAME, nomeCrianca);
-            localStorage.setItem(STATE_KEYS.PARENT_NAME, nomeResponsavel);
-            localStorage.setItem(STATE_KEYS.EMAIL, email);
-            localStorage.setItem(STATE_KEYS.IS_LOGGED_IN, "true");
+            const btn = event.target.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = "Criando Conta...";
 
-            // Redireciona para selecionar avatar
-            window.location.href = 'avatar.html';
+            try {
+                const data = await signUp(email, senha, nomeCrianca, nomeResponsavel);
+                
+                if (data && data.session) {
+                    // Automatically logged in (email confirmation disabled)
+                    localStorage.setItem(STATE_KEYS.CHILD_NAME, nomeCrianca);
+                    localStorage.setItem(STATE_KEYS.PARENT_NAME, nomeResponsavel);
+                    localStorage.setItem(STATE_KEYS.EMAIL, email);
+                    localStorage.setItem(STATE_KEYS.IS_LOGGED_IN, "true");
+                    localStorage.removeItem(STATE_KEYS.AVATAR_ID);
+                    
+                    alert("Conta criada com sucesso!");
+                    window.location.href = 'avatar.html';
+                } else {
+                    // Email confirmation enabled
+                    alert("Conta criada com sucesso! Por favor, verifique seu e-mail para confirmar o cadastro antes de entrar.");
+                    window.location.href = 'index.html';
+                }
+            } catch (err) {
+                alert("Erro ao criar conta: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
         }
     </script>
 </body>

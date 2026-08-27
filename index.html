@@ -8,6 +8,7 @@
 </head>
 <body>
 
+    <!-- Header -->
     <header>
         <a class="logo" href="index.html">Eco kids</a>
         <div class="nav-buttons">
@@ -16,9 +17,10 @@
         </div>
     </header>
 
+    <!-- Main Section -->
     <main>
         <div class="landing-content">
-            <!-- Logo -->
+            <!-- Vector Logo High Fidelity -->
             <div class="landing-logo">
                 <svg viewBox="0 0 500 300" width="100%" height="100%">
                     <!-- SUN (Top Left of Text) -->
@@ -152,27 +154,28 @@
     </main>
 
     <!-- Background script & Auth logic -->
-    <script src="js/auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/auth.js?v=1.0.1"></script>
     <script>
         const btnEntrar = document.getElementById('btnEntrar');
         const loginOverlay = document.getElementById('loginOverlay');
         const loginState = document.getElementById('loginState');
         const recoverState = document.getElementById('recoverState');
 
-        // Altera o display do dropdown
+        // Toggle dropdown display
         btnEntrar.addEventListener('click', (e) => {
             e.stopPropagation();
             loginOverlay.classList.toggle('hidden');
         });
 
-        // Fecha o dropdown quando clicar fora
+        // Close dropdown when clicking outside
         document.addEventListener('click', (e) => {
             if (!loginOverlay.contains(e.target) && e.target !== btnEntrar) {
                 loginOverlay.classList.add('hidden');
             }
         });
 
-        // Altera o estado no card
+        // Switch states inside the overlay card
         function toggleOverlayState(state) {
             if (state === 'recover') {
                 loginState.style.display = 'none';
@@ -183,30 +186,75 @@
             }
         }
 
-        // Login Handler
-        function handleLoginSubmit(event) {
+        // Handle Login form
+        async function handleLoginSubmit(event) {
             event.preventDefault();
             const email = document.getElementById('loginEmail').value;
-            
-            // Set dummy names based on email or default to "Visitante" if no previous account is saved
-            const savedEmail = localStorage.getItem(STATE_KEYS.EMAIL);
-            if (savedEmail !== email) {
-                // Set default mock session info
-                localStorage.setItem(STATE_KEYS.CHILD_NAME, "Gabriel");
-                localStorage.setItem(STATE_KEYS.PARENT_NAME, "Flávio");
-                localStorage.setItem(STATE_KEYS.EMAIL, email);
-                localStorage.setItem(STATE_KEYS.AVATAR_ID, "4"); // Boy avatar
-            }
+            const senha = document.getElementById('loginSenha').value;
 
-            localStorage.setItem(STATE_KEYS.IS_LOGGED_IN, "true");
-            window.location.href = 'dashboard.html';
+            const btn = event.target.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = "Entrando...";
+
+            try {
+                const data = await signIn(email, senha);
+                
+                if (data && data.session && data.user) {
+                    const metadata = data.user.user_metadata || {};
+                    const childName = metadata.child_name || "Criança";
+                    const parentName = metadata.parent_name || "Responsável";
+                    const avatarId = metadata.avatar_id || null;
+
+                    localStorage.setItem(STATE_KEYS.CHILD_NAME, childName);
+                    localStorage.setItem(STATE_KEYS.PARENT_NAME, parentName);
+                    localStorage.setItem(STATE_KEYS.EMAIL, email);
+                    localStorage.setItem(STATE_KEYS.IS_LOGGED_IN, "true");
+                    
+                    if (avatarId) {
+                        localStorage.setItem(STATE_KEYS.AVATAR_ID, avatarId.toString());
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        // User has no avatar, redirect to selection
+                        localStorage.removeItem(STATE_KEYS.AVATAR_ID);
+                        window.location.href = 'avatar.html';
+                    }
+                } else {
+                    alert("Erro ao entrar. Por favor, tente novamente.");
+                }
+            } catch (err) {
+                alert("Erro de autenticação: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
         }
 
-        // Handle Send Code simulation
-        function handleRecoverSubmit(event) {
+        // Handle Send Code simulation / real password recovery
+        async function handleRecoverSubmit(event) {
             event.preventDefault();
-            alert("Código de recuperação enviado para o seu e-mail! (Código simulado: 1234)");
-            document.getElementById('recoverCode').focus();
+            const email = document.getElementById('recoverEmail').value;
+
+            const btn = document.getElementById('btnEnviarCodigo');
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = "Enviando...";
+
+            try {
+                if (isSupabaseConfigured) {
+                    await resetPassword(email);
+                    alert("E-mail de recuperação enviado com sucesso através do Supabase! Por favor, verifique sua caixa de entrada e clique no link de redefinição.");
+                } else {
+                    // Fallback mock
+                    alert("Modo demonstração: Código de recuperação enviado para o seu e-mail! (Código simulado: 1234)");
+                    document.getElementById('recoverCode').focus();
+                }
+            } catch (err) {
+                alert("Erro ao solicitar recuperação: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
         }
 
         // Handle Verification Code simulation

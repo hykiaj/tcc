@@ -111,3 +111,186 @@ document.addEventListener('DOMContentLoaded', () => {
         injectPuzzleDecorations();
     }
 });
+
+// =========================================================================
+// Supabase Integration & Dual-Mode Configuration
+// =========================================================================
+
+// SUBSTITUTE these keys with your real Supabase Project credentials
+const SUPABASE_URL = "https://wenmhmsfhzbidnxpkfry.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_D-yA1kzchqkEpf5WEuV_hA_5z1dLTZr";
+
+let supabaseClient = null;
+let isSupabaseConfigured = false;
+
+// Check if CDN is loaded and credentials are set (not equal to placeholder values)
+if (typeof window.supabase !== 'undefined' && 
+    SUPABASE_URL && SUPABASE_URL.startsWith("https://") && 
+    SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes("SUA_SUPABASE")) {
+    try {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        isSupabaseConfigured = true;
+        console.log("Eco Kids: Conectado ao Supabase com sucesso! 🎉");
+    } catch (error) {
+        console.error("Eco Kids: Erro ao inicializar o Supabase:", error);
+    }
+} else {
+    console.log("Eco Kids: Supabase não configurado ou rodando localmente sem CDN. Modo demonstração ativo (LocalStorage). ℹ️");
+}
+
+// Sign up user with metadata
+async function signUp(email, password, childName, parentName) {
+    if (isSupabaseConfigured && supabaseClient) {
+        const { data, error } = await supabaseClient.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+                data: {
+                    child_name: childName,
+                    parent_name: parentName,
+                    avatar_id: null
+                }
+            }
+        });
+        if (error) throw error;
+        return data;
+    } else {
+        // Mock fallback
+        localStorage.setItem(STATE_KEYS.CHILD_NAME, childName);
+        localStorage.setItem(STATE_KEYS.PARENT_NAME, parentName);
+        localStorage.setItem(STATE_KEYS.EMAIL, email);
+        localStorage.setItem(STATE_KEYS.IS_LOGGED_IN, "true");
+        localStorage.removeItem(STATE_KEYS.AVATAR_ID); // Reset to choose avatar
+        return {
+            session: { access_token: "mock-token" },
+            user: { email, user_metadata: { child_name: childName, parent_name: parentName, avatar_id: null } }
+        };
+    }
+}
+
+// Sign in user and retrieve metadata
+async function signIn(email, password) {
+    if (isSupabaseConfigured && supabaseClient) {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+        if (error) throw error;
+        return data;
+    } else {
+        // Mock fallback
+        const savedEmail = localStorage.getItem(STATE_KEYS.EMAIL);
+        let childName = "Gabriel";
+        let parentName = "Flávio";
+        let avatarId = "4"; // Default
+        
+        if (savedEmail === email) {
+            childName = localStorage.getItem(STATE_KEYS.CHILD_NAME) || childName;
+            parentName = localStorage.getItem(STATE_KEYS.PARENT_NAME) || parentName;
+            avatarId = localStorage.getItem(STATE_KEYS.AVATAR_ID) || avatarId;
+        }
+
+        return {
+            session: { access_token: "mock-token" },
+            user: {
+                email: email,
+                user_metadata: {
+                    child_name: childName,
+                    parent_name: parentName,
+                    avatar_id: avatarId
+                }
+            }
+        };
+    }
+}
+
+// Sign out and clear local state
+async function signOut() {
+    if (isSupabaseConfigured && supabaseClient) {
+        try {
+            await supabaseClient.auth.signOut();
+        } catch (e) {
+            console.error("Erro no signOut do Supabase:", e);
+        }
+    }
+    // Always clear localStorage for clean user experience
+    localStorage.removeItem(STATE_KEYS.IS_LOGGED_IN);
+    localStorage.removeItem(STATE_KEYS.CHILD_NAME);
+    localStorage.removeItem(STATE_KEYS.PARENT_NAME);
+    localStorage.removeItem(STATE_KEYS.EMAIL);
+    localStorage.removeItem(STATE_KEYS.AVATAR_ID);
+}
+
+// Update child selected avatar
+async function updateAvatar(avatarId) {
+    if (isSupabaseConfigured && supabaseClient) {
+        const { data, error } = await supabaseClient.auth.updateUser({
+            data: { avatar_id: avatarId.toString() }
+        });
+        if (error) throw error;
+        return data;
+    } else {
+        // Mock fallback
+        localStorage.setItem(STATE_KEYS.AVATAR_ID, avatarId.toString());
+        return { user: { user_metadata: { avatar_id: avatarId.toString() } } };
+    }
+}
+
+// Reset password trigger
+async function resetPassword(email) {
+    if (isSupabaseConfigured && supabaseClient) {
+        if (window.location.protocol === 'file:') {
+            throw new Error("O redirecionamento do Supabase para recuperação de senha exige que o site seja executado via servidor web (http/https). O protocolo 'file://' não é suportado pelo Supabase para redirecionamentos.");
+        }
+        // Redirect back to the index/login page
+        const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + window.location.pathname.replace('cadastro.html', 'index.html')
+        });
+        if (error) throw error;
+        return data;
+    } else {
+        // Mock recovery code alert triggers from caller
+        return { message: "Simulação de e-mail enviada." };
+    }
+}
+
+// Background session verification
+async function checkSession() {
+    if (isSupabaseConfigured && supabaseClient) {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) {
+            console.warn("Eco Kids: Sessão inativa ou expirada. Efetuando logout...");
+            await signOut();
+            window.location.href = 'index.html';
+        }
+    }
+}
+
+// Listen to auth status changes (useful for email confirmation and password reset redirects)
+if (isSupabaseConfigured && supabaseClient) {
+    supabaseClient.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+            console.log("Eco Kids: Usuário autenticado via Supabase Auth! Syncing local state...");
+            const metadata = session.user.user_metadata || {};
+            const childName = metadata.child_name || "Criança";
+            const parentName = metadata.parent_name || "Responsável";
+            const avatarId = metadata.avatar_id || null;
+
+            localStorage.setItem(STATE_KEYS.CHILD_NAME, childName);
+            localStorage.setItem(STATE_KEYS.PARENT_NAME, parentName);
+            localStorage.setItem(STATE_KEYS.EMAIL, session.user.email);
+            localStorage.setItem(STATE_KEYS.IS_LOGGED_IN, "true");
+
+            const isLandingPage = window.location.pathname.includes('index.html') || window.location.pathname.endsWith('/');
+            if (isLandingPage) {
+                if (avatarId) {
+                    localStorage.setItem(STATE_KEYS.AVATAR_ID, avatarId.toString());
+                    window.location.href = 'dashboard.html';
+                } else {
+                    localStorage.removeItem(STATE_KEYS.AVATAR_ID);
+                    window.location.href = 'avatar.html';
+                }
+            }
+        }
+    });
+}
